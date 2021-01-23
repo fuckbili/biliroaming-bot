@@ -1,23 +1,15 @@
 const redis = require('./redis')
 const sql = require('./sql')
-async function check_admin(Tg_id) {//检测是否是机器人管理员,bool
-    redis_tgid = await redis.get('tg_admin' + Tg_id)
-    switch (redis_tgid != null || redis_tgid != undefined) {
+const admin = require('./config')
+async function check_admin(Tg_id) { //检测是否是机器人管理员,bool
+    switch (Tg_id == admin.Super_admin) {
         case true:
             return true
         case false:
-            sql_data = await sql.query(`SELECT * FROM bili_uid WHERE Tg_id=${Tg_id} and is_tg_admin='true'`)
-            switch (sql_data.length != 0) {
-                case true:
-                    redis.setex('tg_admin' + Tg_id, 86400, Tg_id)
-                    return true
-                case false:
-                    return false
-            }
-
+            return false
     }
 }
-async function check_black(uid) {//检测缓存是否是黑名单,如果是就删除缓存
+async function check_black(uid) { //检测缓存是否是黑名单,如果是就删除缓存
     try {
         data = await sql.query(`insert into bili_uid(uid,black) values(${uid},'false') on duplicate key update uid=${uid},black='false'`)
     } catch (error) {
@@ -35,7 +27,7 @@ async function check_black(uid) {//检测缓存是否是黑名单,如果是就�
     }
 
 }
-async function check_white(uid) {//检测缓存是否是白名单,如果是就删除缓存
+async function check_white(uid) { //检测缓存是否是白名单,如果是就删除缓存
     try {
         data = await sql.query(`insert into bili_uid(uid,black) values(${uid},'true') on duplicate key update uid=${uid},black='true'`)
     } catch (error) {
@@ -53,21 +45,21 @@ async function check_white(uid) {//检测缓存是否是白名单,如果是就�
     }
 
 }
-async function del_uid(uid){
-    try{
-        data=await sql.query(`DELETE FROM bili_uid where uid=${uid}`)
+async function del_uid(uid) {
+    try {
+        data = await sql.query(`DELETE FROM bili_uid where uid=${uid}`)
         console.log(data)
-        switch(data.affectedRows){
+        switch (data.affectedRows) {
             case 1:
-                return 'UID:'+uid+'删除成功'
-                case 0:
-                    return 'UID:'+uid+'删除失败,数据库没有此uid'
-                    default:
-                        return '未知错误'
+                return 'UID:' + uid + '删除成功'
+            case 0:
+                return 'UID:' + uid + '删除失败,数据库没有此uid'
+            default:
+                return '未知错误'
         }
-    }catch(error){
+    } catch (error) {
         console.log(error)
-        return 'UID:'+uid+'删除失败,程序错误'
+        return 'UID:' + uid + '删除失败,程序错误'
     }
 }
 module.exports = {

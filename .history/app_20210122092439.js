@@ -77,11 +77,12 @@ bot.onText(/\/del_uid (.+)/, async (msg, match) => {
         return bot.sendMessage(chatId, '机器人错误');
     }
 });
+
 bot.onText(/\/start/, async (msg) => {
     const formId= msg.from.id;
     const chatId=msg.chat.id;
     try {
-        return bot.sendMessage(chatId, 'hello,By:mk39,你的Telegram ID为:'+formId);
+        return bot.sendMessage(chatId, 'hello,By:mk39');
     } catch (error) {
         return bot.sendMessage(chatId, '机器人错误');
     }
