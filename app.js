@@ -18,7 +18,7 @@ bot.onText(/\/black (.+)/, async (msg, match) => {
                 admin = await model.check_admin(formId)
                 switch (admin) {
                     case true:
-                        data = await model.check_white(resp)
+                        data = await model.check_black(resp)
                         return bot.sendMessage(formId, data);
                     case false:
                         return bot.sendMessage(chatId, '不是狗管理，别瞎几把动');
@@ -28,10 +28,11 @@ bot.onText(/\/black (.+)/, async (msg, match) => {
         }
 
     } catch (error) {
-        return bot.sendMessage(chatId, '机器人错误');
+        console.log(error)
+        return bot.sendMessage(chatId, '加入黑名单失败,机器人错误');
     }
 });
-bot.onText(/\/del (.+)/, async (msg, match) => {
+bot.onText(/\/white (.+)/, async (msg, match) => {
     const formId= msg.from.id;
     const chatId=msg.chat.id;
     const resp = match[1];
@@ -41,17 +42,17 @@ bot.onText(/\/del (.+)/, async (msg, match) => {
                 admin = await model.check_admin(formId)
                 switch (admin) {
                     case true:
-                        data = await model.check_black(resp)
+                        data = await model.check_white(resp)
                         return bot.sendMessage(chatId, data);
                     case false:
                         return bot.sendMessage(chatId, '非狗管理,爬');
                 }
                 case true:
-                    return bot.sendMessage(chatId, '请输入正确格式,如/del 12345');
+                    return bot.sendMessage(chatId, '请输入正确格式,如/white 12345');
 
         }
     } catch (error) {
-        return bot.sendMessage(chatId, '机器人错误');
+        return bot.sendMessage(chatId, '加入白名单失败,机器人错误');
     }
 });
 bot.onText(/\/del_uid (.+)/, async (msg, match) => {
@@ -74,7 +75,7 @@ bot.onText(/\/del_uid (.+)/, async (msg, match) => {
 
         }
     } catch (error) {
-        return bot.sendMessage(chatId, '机器人错误');
+        return bot.sendMessage(chatId, '删除账号数据失败,机器人错误');
     }
 });
 bot.onText(/\/start/, async (msg) => {
